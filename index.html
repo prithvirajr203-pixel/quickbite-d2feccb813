@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>QuickBite – Food Delivery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --primary-bg: #fff;
+  --accent: #ff6f3c;
+  --accent-dark: #e65a28;
+  --text-dark: #333;
+  --text-light: #555;
+  --border-radius: .8rem;
+  --shadow: 0 2px 8px rgba(0,0,0,.1);
+  --transition: .3s ease;
+  --max-width: 1200px;
+}
+*,
+*::before,
+*::after { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+  background: var(--primary-bg);
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; display: block; border-radius: var(--border-radius); }
+section { padding: 4rem 1rem; }
+.container { max-width: var(--max-width); margin: 0 auto; }
+h1, h2, h3 { margin-bottom: .5rem; }
+p { margin-bottom: 1rem; color: var(--text-light); }
+button, .btn {
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: .75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+button:hover, .btn:hover { background: var(--accent-dark); }
+input, textarea {
+  width: 100%;
+  padding: .75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  margin-bottom: .5rem;
+  transition: var(--transition);
+}
+input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+.error { color: #c00; font-size: .875rem; }
+.hidden { display: none; }
+
+/* Skeleton */
+.skeleton {
+  background: #e0e0e0;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%{opacity:1}
+  50%{opacity:0.4}
+  100%{opacity:1}
+}
+.skeleton.h1 { height: 2.5rem; width: 60%; margin-bottom: .5rem; }
+.skeleton.search { height: 2rem; width: 100%; margin-bottom: 1rem; }
+
+/* Hero */
+#hero {
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  color: #fff;
+  text-align: center;
+  padding: 6rem 1rem;
+  position: relative;
+}
+#hero h1 { font-size: 2.5rem; margin-bottom: .5rem; }
+#hero p { font-size: 1.125rem; margin-bottom: 1.5rem; }
+#hero .search-bar {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  gap: .5rem;
+}
+#hero .search-bar input {
+  flex:1;
+  border-radius: var(--border-radius);
+  border: none;
+  padding: .75rem 1rem;
+}
+#hero .search-bar button {
+  border-radius: var(--border-radius);
+}
+
+/* About */
+#about .about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  #about .about-grid { grid-template-columns: 1fr; }
+}
+
+/* Carousel */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
+  padding-bottom: .5rem;
+}
+.carousel::-webkit-scrollbar { display:none; }
+.card {
+  flex: 0 0 260px;
+  background: #fff;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  scroll-snap-align: start;
+  transition: var(--transition);
+}
+.card:hover { transform: translateY(-4px); }
+.rating { color: #f5a623; }
+
+/* Grid cards */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 600px) {
+  .grid-2 { grid-template-columns: repeat(2,1fr); }
+}
+@media (min-width: 900px) {
+  .grid-3 { grid-template-columns: repeat(3,1fr); }
+}
+
+/* How it works */
+#how_it_works .steps {
+  display: grid;
+  gap: 2rem;
+}
+@media (min-width: 600px) {
+  #how_it_works .steps { grid-template-columns: repeat(2,1fr); }
+}
+@media (min-width: 900px) {
+  #how_it_works .steps { grid-template-columns: repeat(4,1fr); }
+}
+.step-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* FAQ Accordion */
+.accordion-item { border-bottom: 1px solid #eee; }
+.accordion-question {
+  background: #f9f9f9;
+  padding: .75rem 1rem;
+  cursor: pointer;
+  position: relative;
+}
+.accordion-question::after {
+  content: '+';
+  position: absolute;
+  right: 1rem;
+  font-size: 1.5rem;
+  transition: var(--transition);
+}
+.accordion-question.active::after { content: '-'; }
+.accordion-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease;
+  padding: 0 1rem;
+}
+.accordion-answer p { padding: .75rem 0; }
+
+/* Contact Form */
+#contact form { max-width: 500px; margin-top: 1rem; }
+#contact .status { margin-top: 1rem; font-weight: bold; }
+
+/* Footer */
+#footer {
+  background: #2b2b2b;
+  color: #fff;
+  padding: 3rem 1rem;
+}
+#footer .footer-grid {
+  display: grid;
+  gap: 2rem;
+}
+@media (min-width: 600px) {
+  #footer .footer-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (min-width: 900px) {
+  #footer .footer-grid { grid-template-columns: repeat(4,1fr); }
+}
+#footer a { color: #fff; }
+#footer input { border: none; }
+#footer .newsletter input { border-radius: var(--border-radius) 0 0 var(--border-radius); }
+#footer .newsletter button { border-radius: 0 var(--border-radius) var(--border-radius) 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="container" style="display:flex;justify-content:space-between;align-items:center;padding:1rem 0;">
+    <a href="#" style="font-size:1.5rem;font-weight:bold;color:var(--accent);">QuickBite</a>
+    <ul style="list-style:none;display:flex;gap:1rem;">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#featured_restaurants">Restaurants</a></li>
+      <li><a href="#offers">Offers</a></li>
+      <li><a href="#cart">Cart</a></li>
+      <li><a href="#checkout">Checkout</a></li>
+      <li><a href="#order-tracking">Order Tracking</a></li>
+      <li><a href="#profile">Profile</a></li>
+      <li><a href="#help-support">Help & Support</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section id="hero">
+  <div class="container" id="hero-content">
+    <div class="skeleton h1 hidden" id="hero-title-skeleton"></div>
+    <h1>Satisfy Your Cravings, Instantly</h1>
+    <p>Find the best local eats right at your doorstep. Search by city, cuisine, or dish and let QuickBite do the rest.</p>
+    <div class="skeleton search hidden" id="hero-search-skeleton"></div>
+    <form id="hero-search" class="search-bar" aria-label="Search food">
+      <input type="text" id="search-input" placeholder="Search city, cuisine, or dish..." aria-label="Search input">
+      <button type="submit" aria-label="Search">Search</button>
+    </form>
+    <p id="search-error" class="error hidden">Please enter a search term.</p>
+    <a href="#featured_restaurants" class="btn" style="margin-top:1.5rem;display:inline-block;">Browse Restaurants</a>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <img src="https://images.pexels.com/photos/8021105/pexels-photo-8021105.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Diverse group enjoying food">
+      <div>
+        <h2>QuickBite: Your Food, Your Way</h2>
+        <p>We bring campus cafés, office lunch spots, and family favorites straight to your table—fast, reliable, and always delicious. Whether you’re a student, a professional, or a busy parent, we make mealtime effortless.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="featured_restaurants">
+  <div class="container">
+    <h2>Top Picks Near You</h2>
+    <p>These favorites are raving reviews and quick delivery. Add your next meal in seconds.</p>
+    <div class="carousel">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1589308078059-5c1b1b9b5b1b?auto=format&fit=crop&w=400&q=80" alt="Sushi Zen">
+        <h3>Sushi Zen</h3>
+        <p class="rating">★★★★☆ (4.8)</p>
+        <p>Location: Downtown</p>
+        <p>Price: $$</p>
+        <button class="btn">Add</button>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1523986371872-9d3b1c5b1b1b?auto=format&fit=crop&w=400&q=80" alt="Pasta Palace">
+        <h3>Pasta Palace</h3>
+        <p class="rating">★★★★☆ (4.6)</p>
+        <p>Location: Midtown</p>
+        <p>Price: $$</p>
+        <button class="btn">Add</button>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80" alt="Burger Barn">
+        <h3>Burger Barn</h3>
+        <p class="rating">★★★★☆ (4.7)</p>
+        <p>Location: Uptown</p>
+        <p>Price: $</p>
+        <button class="btn">Add</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how_it_works">
+  <div class="container">
+    <h2>Order in 4 Easy Steps</h2>
+    <p>From choosing your dish to doorstep delivery, QuickBite keeps it simple.</p>
+    <div class="steps">
+      <div class="card">
+        <div class="step-number">1</div>
+        <h3>Select</h3>
+        <p>Browse menus or search your favorite dish.</p>
+      </div>
+      <div class="card">
+        <div class="step-number">2</div>
+        <h3>Customize</h3>
+        <p>Add toppings, choose portion size, and note preferences.</p>
+      </div>
+      <div class="card">
+        <div class="step-number">3</div>
+        <h3>Add to Cart</h3>
+        <p>Review your order and apply any promo codes.</p>
+      </div>
+      <div class="card">
+        <div class="step-number">4</div>
+        <h3>Checkout</h3>
+        <p>Secure payment and track delivery in real time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="offers">
+  <div class="container">
+    <h2>Hot Deals This Week</h2>
+    <p>Save on your next order with exclusive discounts and bundle offers.</p>
+    <div class="carousel">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80" alt="Student Saver">
+        <h3>Student Saver</h3>
+        <p>20% off on orders over $25</p>
+        <p>Expires 30 Sep</p>
+        <button class="btn">Get Deal</button>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1523986371872-9d3b1c5b1b1b?auto=format&fit=crop&w=400&q=80" alt="Family Feast">
+        <h3>Family Feast</h3>
+        <p>Buy 2 Get 1 Free on pizza</p>
+        <p>Expires 5 Oct</p>
+        <button class="btn">Get Deal</button>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80" alt="Early Bird">
+        <h3>Early Bird</h3>
+        <p>Free delivery before 9 AM</p>
+        <p>Expires 15 Sep</p>
+        <button class="btn">Get Deal</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="favorites">
+  <div class="container">
+    <h2>Your Saved Favorites</h2>
+    <p>Quick access to the restaurants and dishes you love.</p>
+    <div class="grid grid-3">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1589308078059-5c1b1b9b5b1b?auto=format&fit=crop&w=400&q=80" alt="Sushi Zen">
+        <h3>Sushi Zen</h3>
+        <p>Dish: Dragon Roll</p>
+        <p class="rating">★★★★☆ (4.8)</p>
+        <button class="btn">Add to Cart</button>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1523986371872-9d3b1c5b1b1b?auto=format&fit=crop&w=400&q=80" alt="Pasta Palace">
+        <h3>Pasta Palace</h3>
+        <p>Dish: Spaghetti Carbonara</p>
+        <p class="rating">★★★★☆ (4.6)</p>
+        <button class="btn">Add to Cart</button>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80" alt="Burger Barn">
+        <h3>Burger Barn</h3>
+        <p>Dish: Classic Cheeseburger</p>
+        <p class="rating">★★★★☆ (4.7)</p>
+        <button class="btn">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials">
+  <div class="container">
+    <h2>What Our Customers Say</h2>
+    <p>Real stories from real people who love QuickBite.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        <p>"QuickBite saved my exam week—delivered hot meals in 30 minutes!"</p>
+        <p><strong>Aisha Patel</strong>, College Student</p>
+        <p class="rating">★★★★★</p>
+      </div>
+      <div class="card">
+        <p>"The lunch delivery is reliable and the food is consistently great."</p>
+        <p><strong>Mark Thompson</strong>, Marketing Manager</p>
+        <p class="rating">★★★★½</p>
+      </div>
+      <div class="card">
+        <p>"Family meals are a breeze; the app is so user-friendly."</p>
+        <p><strong>Lily Nguyen</strong>, Mom of Two</p>
+        <p class="rating">★★★★★</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <h2>Frequently Asked Questions</h2>
+    <p>Got questions? We’ve got answers.</p>
+    <div class="accordion">
+      <div class="accordion-item">
+        <div class="accordion-question" role="button" tabindex="0" aria-expanded="false">How do I track my order?</div>
+        <div class="accordion-answer"><p>Once you place an order, you can view real‑time updates in the Order Tracking section of the app.</p></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-question" role="button" tabindex="0" aria-expanded="false">What payment methods are accepted?</div>
+        <div class="accordion-answer"><p>We accept credit/debit cards, PayPal, and in‑app wallet balances.</p></div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-question" role="button" tabindex="0" aria-expanded="false">Can I cancel or modify my order?</div>
+        <div class="accordion-answer"><p>Orders can be canceled within 5 minutes of placement; after that, we can’t guarantee changes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="restaurant-details">
+  <div class="container">
+    <h2>Restaurant Details</h2>
+    <p>Placeholder content for the Restaurant Details page.</p>
+  </div>
+</section>
+
+<section id="cart">
+  <div class="container">
+    <h2>Cart</h2>
+    <p>Placeholder content for the Cart page.</p>
+  </div>
+</section>
+
+<section id="checkout">
+  <div class="container">
+    <h2>Checkout</h2>
+    <p>Placeholder content for the Checkout page.</p>
+  </div>
+</section>
+
+<section id="order-tracking">
+  <div class="container">
+    <h2>Order Tracking</h2>
+    <p>Placeholder content for the Order Tracking page.</p>
+  </div>
+</section>
+
+<section id="profile">
+  <div class="container">
+    <h2>Profile</h2>
+    <p>Placeholder content for the Profile page.</p>
+  </div>
+</section>
+
+<section id="help-support">
+  <div class="container">
+    <h2>Help & Support</h2>
+    <p>Placeholder content for the Help & Support page.</p>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <h2>Need Help?</h2>
+    <p>Reach out to our support team anytime. Email: <a href="mailto:prithvirajr211@gmail.com">prithvirajr211@gmail.com</a></p>
+    <form id="contact-form" novalidate>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
+      <div class="error hidden" id="error-name">Please enter your name.</div>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+      <div class="error hidden" id="error-email">Please enter a valid email.</div>
+
+      <label for="phone">Phone</label>
+      <input type="tel" id="phone" name="phone" required pattern="\\+?[0-9\\s-]{7,15}">
+      <div class="error hidden" id="error-phone">Please enter a valid phone number.</div>
+
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
+      <div class="error hidden" id="error-message">Please enter a message.</div>
+
+      <button type="submit" class="btn" id="contact-submit">Send Message</button>
+    </form>
+    <div class="status hidden" id="contact-status"></div>
+  </div>
+</section>
+
+<footer id="footer">
+  <div class="container footer-grid">
+    <div>
+      <h3>QuickBite</h3>
+      <ul style="list-style:none;">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#featured_restaurants">Restaurants</a></li>
+        <li><a href="#offers">Offers</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Legal</h3>
+      <ul style="list-style:none;">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Follow Us</h3>
+      <ul style="list-style:none;display:flex;gap:.5rem;">
+        <li><a href="#" aria-label="Facebook">📘</a></li>
+        <li><a href="#" aria-label="Twitter">🐦</a></li>
+        <li><a href="#" aria-label="Instagram">📸</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Newsletter</h3>
+      <form id="newsletter-form" class="newsletter" style="display:flex;">
+        <input type="email" placeholder="Your email" required aria-label="Newsletter email">
+        <button type="submit" class="btn">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Hero loading simulation
+document.addEventListener('DOMContentLoaded', () => {
+  const hero = document.getElementById('hero-content');
+  const titleSkeleton = document.getElementById('hero-title-skeleton');
+  const searchSkeleton = document.getElementById('hero-search-skeleton');
+  titleSkeleton.classList.remove('hidden');
+  searchSkeleton.classList.remove('hidden');
+  hero.style.opacity = 0;
+  setTimeout(() => {
+    titleSkeleton.classList.add('hidden');
+    searchSkeleton.classList.add('hidden');
+    hero.style.opacity = 1;
+  }, 2000);
+});
+
+// Hero search validation
+document.getElementById('hero-search').addEventListener('submit', function(e){
+  e.preventDefault();
+  const input = document.getElementById('search-input');
+  const error = document.getElementById('search-error');
+  if (input.value.trim() === '') {
+    error.classList.remove('hidden');
+  } else {
+    error.classList.add('hidden');
+    alert('Searching for: ' + input.value);
+  }
+});
+
+// FAQ accordion with keyboard support
+document.querySelectorAll('.accordion-question').forEach(q => {
+  q.addEventListener('click', () => toggleAccordion(q));
+  q.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleAccordion(q);
+    }
+  });
+});
+function toggleAccordion(q) {
+  const isActive = q.classList.toggle('active');
+  const answer = q.nextElementSibling;
+  if (isActive) {
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    q.setAttribute('aria-expanded', 'true');
+  } else {
+    answer.style.maxHeight = null;
+    q.setAttribute('aria-expanded', 'false');
+  }
+}
+
+// Contact form handling
+document.getElementById('contact-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const name = document.getElementById('name');
+  const email = document.getElementById('email');
+  const phone = document.getElementById('phone');
+  const message = document.getElementById('message');
+  let valid = true;
+
+  if (!name.value.trim()){
+    document.getElementById('error-name').classList.remove('hidden');
+    valid = false;
+  } else {
+    document.getElementById('error-name').classList.add('hidden');
+  }
+  if (!email.value.trim() || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email.value)){
+    document.getElementById('error-email').classList.remove('hidden');
+    valid = false;
+  } else {
+    document.getElementById('error-email').classList.add('hidden');
+  }
+  if (!phone.value.trim() || !/^\\+?[0-9\\s-]{7,15}$/.test(phone.value)){
+    document.getElementById('error-phone').classList.remove('hidden');
+    valid = false;
+  } else {
+    document.getElementById('error-phone').classList.add('hidden');
+  }
+  if (!message.value.trim()){
+    document.getElementById('error-message').classList.remove('hidden');
+    valid = false;
+  } else {
+    document.getElementById('error-message').classList.add('hidden');
+  }
+
+  if (!valid) return;
+
+  const submitBtn = document.getElementById('contact-submit');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  const status = document.getElementById('contact-status');
+
+  try {
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name.value,
+        email: email.value,
+        phone: phone.value,
+        message: message.value
+      })
+    });
+    if (response.ok) {
+      status.textContent = "Thanks! Your message has been sent. We'll get back to you soon.";
+      status.classList.remove('hidden');
+      document.getElementById('contact-form').classList.add('hidden');
+    } else {
+      throw new Error('Network response was not ok');
+    }
+  } catch (err) {
+    status.textContent = "Sorry, something went wrong. You can also email us directly at prithvirajr211@gmail.com.";
+    status.classList.remove('hidden');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Message';
+  }
+});
+
+// Newsletter (simple demo - just show thank you)
+document.getElementById('newsletter-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  alert('Thank you for subscribing!');
+  this.reset();
+});
+</script>
+</body>
+</html>
